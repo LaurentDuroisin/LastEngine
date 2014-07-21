@@ -1,10 +1,9 @@
-#include <iostream>
-
-using namespace std;
+#include "kernel.h"
 
 int main()
 {
-    cout << "Hello World!" << endl;
+    NLP::Kernel k;
+    k.run();
     return 0;
 }
 
