@@ -16,8 +16,8 @@ namespace NLP
 
 void run(void * kernel)
 {
-    NLP::VirtualKernel * vkernel = (NLP::VirtualKernel *) kernel;
+    //NLP::VirtualKernel * vkernel = (NLP::VirtualKernel *) kernel;
     NLP::ModuleManager module;
     module.run();
-    vkernel->restart();
+    //vkernel->restart();
 }

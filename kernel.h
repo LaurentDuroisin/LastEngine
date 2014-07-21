@@ -12,7 +12,7 @@ namespace NLP
 
         void run(void);
         void changeModuleManager(std::string filename = "libModuleManager");
-        void changeModulePreferences(std::string filename = "default");
+        void changePreferences(std::string filename = "default");
         void restart(void);
     protected :
 
@@ -20,8 +20,10 @@ namespace NLP
 
     private :
         bool m_restart;
+        /** @brief ModuleManager dynamics library without its extension. */
         std::string m_moduleManagerFile;
-        std::string m_modulePreferencesFile;
+        /** @brief Preferences module dynamics library without its extension. */
+        std::string m_preferencesFile;
     };
 }
 

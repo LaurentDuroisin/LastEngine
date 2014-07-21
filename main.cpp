@@ -1,5 +1,8 @@
 #include "kernel.h"
 
+/** @mainpage Last Engine
+ */
+
 int main()
 {
     NLP::Kernel k;

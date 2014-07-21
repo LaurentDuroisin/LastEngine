@@ -10,7 +10,7 @@ namespace NLP
     Kernel::Kernel()
     {
         changeModuleManager();
-        changeModulePreferences();
+        changePreferences();
     }
 
 
@@ -52,9 +52,9 @@ namespace NLP
         m_moduleManagerFile = filename;
     }
 
-    void Kernel::changeModulePreferences(std::string filename)
+    void Kernel::changePreferences(std::string filename)
     {
-        m_modulePreferencesFile = filename;
+        m_preferencesFile = filename;
     }
 
     void Kernel::restart(void)

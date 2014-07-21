@@ -4,12 +4,6 @@
 
 #include "../../VirtualModuleManager.h"
 
-extern "C"
-{
-    __declspec(dllexport)
-    void run(void *);
-}
-
 namespace NLP
 {
 
@@ -18,6 +12,7 @@ namespace NLP
     public:
         ModuleManager();
 
+        /** @brief Load others modules */
         void run(void);
     };
 }

@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}
                 ${SRC_LIST}
                 LICENCE.txt
                 VirtualKernel.h
-                VirtualModuleManager.h)
+                VirtualModuleManager.h
+                doc/Doxyfile)
 
 add_library("ModuleManager" SHARED ${MODULE_SRC_LIST} )
