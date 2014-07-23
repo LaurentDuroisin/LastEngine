@@ -2,7 +2,7 @@
 #define MODULEMANAGER_H
 
 
-#include "../../VirtualModuleManager.h"
+#include "../../Kernel/VirtualModuleManager.h"
 
 namespace NLP
 {
