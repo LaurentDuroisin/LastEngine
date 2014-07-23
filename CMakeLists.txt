@@ -1,7 +1,8 @@
 project(LastEngine)
 cmake_minimum_required(VERSION 2.8)
 add_definitions("-std=c++11")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(BIN_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin/${CMAKE_SYSTEM_PROCESSOR}/${CMAKE_SYSTEM}/${CMAKE_CXX_COMPILER_ID}/ )
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 
 
 # Modules

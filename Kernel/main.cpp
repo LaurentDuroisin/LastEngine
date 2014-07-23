@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include <cstdlib>
 
 /** @mainpage Last Engine
  */
@@ -7,6 +8,6 @@ int main()
 {
     NLP::Kernel k;
     k.run();
-    return 0;
+    return EXIT_SUCCESS;
 }
 

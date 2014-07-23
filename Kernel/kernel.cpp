@@ -2,8 +2,19 @@
 #include "VirtualModuleManager.h"
 
 #include <cassert>
-#include <windows.h> // TODO rewrite
+#include <sstream>
+
+#ifdef _WIN32
+    #include <windows.h> // TODO rewrite
+#else
+    #include <dlfcn.h>
+#endif
+
 #include <iostream>
+
+#if not defined _WIN32 and not defined __linux__
+    #warning "Your OS may be not supported"
+#endif
 
 namespace NLP
 {
@@ -25,26 +36,16 @@ namespace NLP
         } while( m_restart );
     }
 
-    void Kernel::launchModuleManager(void) // TODO rewrite
+    void Kernel::launchModuleManager(void)
     {
-        // load
-        HINSTANCE handle = LoadLibrary( (m_moduleManagerFile + ".dll").c_str() );
-        std::cerr << (m_moduleManagerFile + ".dll") << std::endl;
-        assert( handle );
+        LibraryHandle handle = loadLibrary(m_moduleManagerFile);
 
-        MainFct fct = (MainFct)GetProcAddress(handle, "run");
+        MainFct fct = (MainFct) searchSymbol(handle, "run");
 
-        DWORD lastError = GetLastError();
-        std::cerr << "General failure. GetLastError returned " << std::hex
-        << lastError << ".";
+        if( fct )
+            fct(this);
 
-
-        assert( fct );
-
-        fct(this);
-
-        // unload
-        FreeLibrary(handle);
+        closeLibrary(handle);
     }
 
     void Kernel::changeModuleManager(std::string filename)
@@ -61,4 +62,68 @@ namespace NLP
     {
         m_restart = true;
     }
+
+#ifdef _WIN32
+
+    const std::string Kernel::m_libraryExtension = ".dll";
+
+    Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
+    {
+        HINSTANCE handle = LoadLibrary( (filename + libraryExtension() ).c_str() );
+        return handle ;
+    }
+
+    std::string Kernel::libraryError(void) const
+    {
+        DWORD lastError = GetLastError();
+        std::stringstream ss("LibraryError Windows code : ");
+        ss << (int)lastError;
+        return ss.str();
+    }
+
+    Kernel::LibrarySymbol Kernel::searchSymbol(Kernel::LibraryHandle handle,
+                                               const std::string & symbolName) const
+    {
+        if( ! handle )
+            return nullptr;
+
+        return (LibrarySymbol)GetProcAddress( (HINSTANCE)handle, symbolName.c_str() );
+    }
+
+    void Kernel::closeLibrary(Kernel::LibraryHandle handle) const
+    {
+        if( handle )
+            FreeLibrary( (HINSTANCE)handle);
+    }
+#else
+    #warning "not tested"
+
+    const std::string Kernel::m_libraryExtension = ".so";
+
+    Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
+    {
+        LibraryHandle handle = dlopen( (filename + libraryExtension() ).c_str() );
+        return handle ;
+    }
+
+    std::string Kernel::libraryError(void) const
+    {
+        return dlerror();
+    }
+
+    Kernel::LibrarySymbol Kernel::searchSymbol(Kernel::LibraryHandle handle,
+                                               const std::string & symbolName) const
+    {
+        if( ! handle )
+            return nullptr;
+
+        return (LibrarySymbol)dlsym( (void *)handle, symbolName.c_str() );
+    }
+
+    void Kernel::closeLibrary(Kernel::LibraryHandle handle) const
+    {
+        if( handle )
+            dlclose( (void *)handle);
+    }
+#endif
 }
