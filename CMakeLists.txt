@@ -18,9 +18,11 @@ ENDFOREACH()
 # Kernel
 
 file(GLOB_RECURSE SRC_LIST Kernel/*.h Kernel/*.cpp)
+file(GLOB_RECURSE UML_FILES doc/UML/*.dia)
 set(OTHERS_FILES LICENCE.txt doc/Doxyfile)
 
 add_executable(${PROJECT_NAME}
                ${SRC_LIST}
+               ${UML_FILES}
                ${OTHERS_FILES}
                )
