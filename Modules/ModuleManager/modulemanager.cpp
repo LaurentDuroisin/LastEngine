@@ -47,6 +47,7 @@ namespace NLP
 
     void ModuleManager::run(void)
     {
+        std::cerr << "ok" << std::endl;
         // ?? = load( preferences )
         // getModules
         // si !=, restart
@@ -69,7 +70,7 @@ namespace NLP
         InfoModule loadedInfo;
 
         /* preferences
-         * loadedInfo = load(preferences.file(), preferences.symbol() );
+         * loadedInfo = load(preferences.file(), preferences.symbol(), info );
          */
 
         if( ! loadedInfo )
@@ -91,18 +92,26 @@ namespace NLP
         return info;
     }
 
-    InfoModule ModuleManager::load(const std::string &file, const std::string &symbol)
+    InfoModule ModuleManager::load(const std::string &file, const std::string &symbolName)
     {
-        VirtualKernel::LibraryHandle handle = m_kernel.loadLibrary( file );
         InfoModule info;
+        VirtualKernel::LibraryHandle handle = m_kernel.loadLibrary( file );
         if( handle )
         {
-            VirtualKernel::LibrarySymbol symbol = m_kernel.searchSymbol(handle, info.loadFunctionName() );
+            VirtualKernel::LibrarySymbol symbol = m_kernel.searchSymbol(handle, symbolName );
             if( symbol )
             {
-                info = ((LoadFct)symbol)( InfoModule() );
+
+                InfoModule * infoPtr = nullptr;
                 if( info )
+                    infoPtr = &info;
+                infoPtr = \
+                        ((LoadFct)symbol)( infoPtr, *this );
+                if( infoPtr )
+                {
+                    info = *(InfoModule *)infoPtr;
                     info.changeHandle(handle);
+                }
             }
         }
         return info;
@@ -127,9 +136,8 @@ namespace NLP
 
 }
 
-void run(void * kernel)
+void run(NLP::VirtualKernel & kernel)
 {
-    assert( kernel );
-    NLP::ModuleManager module( * (NLP::VirtualKernel *) kernel );
+    NLP::ModuleManager module( kernel );
     module.run();
 }

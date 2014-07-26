@@ -43,7 +43,9 @@ namespace NLP
         MainFct fct = (MainFct) searchSymbol(handle, "run");
 
         if( fct )
-            fct(this);
+            fct( *this);
+        else
+            std::cerr << libraryError() << std::endl;
 
         closeLibrary(handle);
     }
@@ -102,7 +104,7 @@ namespace NLP
 
     Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
     {
-        LibraryHandle handle = dlopen( (filename + libraryExtension() ).c_str() );
+        LibraryHandle handle = dlopen( (filename + libraryExtension() ).c_str(), RTLD_NOW | RTLD_GLOBAL );
         return handle ;
     }
 

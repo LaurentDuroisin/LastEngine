@@ -71,6 +71,7 @@ namespace NLP
          *  @return dynamic library's extension used.
          */
         virtual const std::string & libraryExtension(void) const = 0;
+
     protected :
         /** @brief Launch ModuleManager */
         virtual void launchModuleManager(void) = 0;

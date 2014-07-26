@@ -3,15 +3,17 @@
 
 #include "VirtualKernel.h"
 
+typedef NLP::VirtualKernel VirtualKernel;
+
 extern "C"
 {
     /** @brief Call by the Kernel, launch ModuleManager */
-    __declspec(dllexport) void run(void *);
+    __declspec(dllexport) void run(NLP::VirtualKernel &ptr);
 }
 
 namespace NLP
 {
-    typedef void (*MainFct)(VirtualKernel *);
+    typedef void (*MainFct)(VirtualKernel &);
 
     /** @brief Load and unload others modules */
     class VirtualModuleManager

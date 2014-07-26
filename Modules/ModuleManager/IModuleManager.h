@@ -28,7 +28,7 @@ namespace NLP
     public :
         typedef std::unordered_map<std::string, InfoModule> ModuleList;
         typedef std::vector<std::string> SymbolList;
-        typedef const InfoModule & (*LoadFct)(const InfoModule &);
+        typedef InfoModule * (*LoadFct)(InfoModule *, IModuleManager &);
         typedef const char ** (*SymbolListFct)(void);
 
         virtual InfoModule load(const InfoModule &) = 0;

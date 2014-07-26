@@ -24,6 +24,8 @@ namespace NLP
         void closeLibrary(LibraryHandle handle) const;
 
         const std::string & libraryExtension(void) const { return m_libraryExtension; }
+
+        void printOk(void) const;
     protected :
 
         void launchModuleManager(void);
