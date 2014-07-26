@@ -7,11 +7,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 
 # Modules
 
-FILE(GLOB children Modules/*)
+set( MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Modules)
+FILE(GLOB children RELATIVE ${MODULE_DIR} ${MODULE_DIR}/*)
 FOREACH(child ${children})
-    IF(IS_DIRECTORY ${child})
-        file(GLOB_RECURSE MOD_SRC_LIST ${child}/*.h ${child}/*.cpp)
-        add_library("ModuleManager" SHARED ${MOD_SRC_LIST} )
+    IF(IS_DIRECTORY ${MODULE_DIR}/${child})
+        file(GLOB_RECURSE MOD_SRC_LIST Modules/${child}/*.h Modules/${child}/*.cpp)
+        add_library(${child} SHARED ${MOD_SRC_LIST} )
     ENDIF()
 ENDFOREACH()
 
