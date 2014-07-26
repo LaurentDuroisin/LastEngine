@@ -1,5 +1,5 @@
 #include "modulemanager.h"
-
+#include "../PermanantData/IPermanantData.h"
 #include <iostream>
 #include <cassert>
 
@@ -47,7 +47,7 @@ namespace NLP
 
     void ModuleManager::run(void)
     {
-        std::cerr << "ok" << std::endl;
+        load( infoPermanantData() );
         // ?? = load( preferences )
         // getModules
         // si !=, restart
