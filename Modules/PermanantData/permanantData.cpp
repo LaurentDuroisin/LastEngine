@@ -9,19 +9,40 @@ EXPORT const char ** symbolList(void)
     return symbols;
 }
 
-EXPORT NLP::InfoModule * loadPermanantData(NLP::InfoModule * asked, NLP::IModuleManager & moduleManager)
+EXPORT const NLP::InfoModule * loadPermanantData(const NLP::InfoModule * asked, NLP::IModuleManager & moduleManager)
 {
     static NLP::InfoModule info = NLP::infoPermanantData();
-    //info.changeCompatibility();
-    //info.changeInterface();
-
+    static NLP::PermanantData interface = NLP::PermanantData(moduleManager);
+    info.changeInterface( (NLP::InterfaceModule) & interface);
+/*
     if( asked )
     {
         if( ! info.isCompatible( *(NLP::InfoModule *)asked ) )
             return nullptr;
     }
-
-    std::cerr << "loaded" << std::endl;
+*/
 
     return & info;
+}
+
+namespace NLP
+{
+    bool checkCompatibility(const InfoModule & info)
+    {
+        const InfoModule & m_info = infoModuleManager();
+        if( info.author() != m_info.author() )
+            return false;
+        if( info.interfaceName() != m_info.interfaceName() )
+            return false;
+        if( info.version() > m_info.version() )
+            return false;
+        return true;
+    }
+
+    PermanantData::PermanantData(IModuleManager & moduleManager)
+        : m_moduleManager(moduleManager)
+    {
+        std::cerr << "loaded" << std::endl;
+    }
+
 }

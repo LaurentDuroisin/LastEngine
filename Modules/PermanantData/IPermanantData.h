@@ -16,13 +16,13 @@ namespace NLP
                                            1406375982,
                                            "",
                                            nullptr,
-                                           nullptr,
-                                           "");
+                                           "loadPermanantData");
         return infoModule;
     }
 
     class IPermanantData {
     public :
+        virtual ~IPermanantData(void){}
     };
 }
 

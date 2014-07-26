@@ -19,7 +19,6 @@ namespace NLP
                                            1406288847,
                                            "",
                                            nullptr,
-                                           nullptr,
                                            "");
         return infoModule;
     }
@@ -28,9 +27,10 @@ namespace NLP
     public :
         typedef std::unordered_map<std::string, InfoModule> ModuleList;
         typedef std::vector<std::string> SymbolList;
-        typedef InfoModule * (*LoadFct)(InfoModule *, IModuleManager &);
+        typedef const InfoModule * (*LoadFct)(const InfoModule *, IModuleManager &);
         typedef const char ** (*SymbolListFct)(void);
 
+        virtual ~IModuleManager(void){}
         virtual InfoModule load(const InfoModule &) = 0;
         virtual InfoModule searchInfo(const std::string & file, const std::string & symbol) = 0;
         virtual SymbolList searchSymbol(const std::string & file) = 0;

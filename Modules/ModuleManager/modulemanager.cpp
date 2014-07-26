@@ -29,7 +29,6 @@ namespace NLP
     {
         InfoModule info = infoModuleManager();
         info.changeInterface( (InterfaceModule)this );
-        info.changeCompatibility( checkCompatibility );
         m_loadedModules[info.interfaceName()] = info;
     }
 
@@ -38,13 +37,17 @@ namespace NLP
         for( auto & pair : m_loadedModules )
         {
             if( pair.second )
-                m_kernel.closeLibrary( pair.second.handle() );
+            {
+                m_kernel.closeLibrary( pair.second.handle() );   
+            }
         }
     }
 
     void ModuleManager::run(void)
     {
-        load( infoPermanantData() );
+        InfoModule info = load( infoPermanantData() );
+        if( info )
+            std::cerr << "ok" << std::endl;
         // ?? = load( preferences )
         // getModules
         // si !=, restart
@@ -71,14 +74,14 @@ namespace NLP
          */
 
         if( ! loadedInfo )
-            loadedInfo = load( info.interfaceName(), "load" + info.interfaceName() );
+            loadedInfo = load( info.interfaceName(), "load" + info.interfaceName(), &info );
         if( ! loadedInfo )
-            loadedInfo = load( info.moduleName(), "load" + info.interfaceName() );
+            loadedInfo = load( info.moduleName(), "load" + info.interfaceName(), &info );
 
         if( ! loadedInfo )
             return loadedInfo;
 
-        m_loadedModules[info.interfaceName()] = loadedInfo;
+        m_loadedModules[info.interfaceName()] = loadedInfo; // TODO BUG
         return loadedInfo;
     }
 
@@ -89,7 +92,8 @@ namespace NLP
         return info;
     }
 
-    InfoModule ModuleManager::load(const std::string &file, const std::string &symbolName)
+    InfoModule ModuleManager::load(const std::string &file, const std::string &symbolName,
+                                   const InfoModule * infoPtr)
     {
         InfoModule info;
         VirtualKernel::LibraryHandle handle = m_kernel.loadLibrary( file );
@@ -98,10 +102,6 @@ namespace NLP
             VirtualKernel::LibrarySymbol symbol = m_kernel.searchSymbol(handle, symbolName );
             if( symbol )
             {
-
-                InfoModule * infoPtr = nullptr;
-                if( info )
-                    infoPtr = &info;
                 infoPtr = \
                         ((LoadFct)symbol)( infoPtr, *this );
                 if( infoPtr )

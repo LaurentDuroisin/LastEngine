@@ -23,7 +23,8 @@ namespace NLP
         SymbolList searchSymbol(const std::string & file);
 
     private :
-        InfoModule load(const std::string & file, const std::string & symbol);
+        InfoModule load(const std::string & file, const std::string & symbol,
+                        const InfoModule * infoPtr = nullptr);
 
         /** @brief Kernel used */
         VirtualKernel & m_kernel;
