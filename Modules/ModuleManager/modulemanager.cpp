@@ -4,13 +4,10 @@
 #include <cassert>
 
 
-extern "C"
+EXPORT const char ** symbolList(void)
 {
-    __declspec(dllexport) const char ** symbolList(void)
-    {
-        static const char * symbols[] = {"", nullptr };
-        return symbols;
-    }
+    static const char * symbols[] = {"", nullptr };
+    return symbols;
 }
 
 namespace NLP

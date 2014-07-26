@@ -3,13 +3,15 @@
 
 #include "VirtualKernel.h"
 
-typedef NLP::VirtualKernel VirtualKernel;
+#ifdef _WIN32
+    #define EXPORT extern "C" __declspec(dllexport)
+#else
+    #define EXPORT extern "C" __attribute__((visibility("default")))
+#endif
 
-extern "C"
-{
-    /** @brief Call by the Kernel, launch ModuleManager */
-    __declspec(dllexport) void run(NLP::VirtualKernel &ptr);
-}
+/** @brief Call by the Kernel, launch ModuleManager */
+EXPORT void run(NLP::VirtualKernel &ptr);
+
 
 namespace NLP
 {
