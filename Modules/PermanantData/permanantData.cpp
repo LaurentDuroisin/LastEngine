@@ -14,13 +14,15 @@ EXPORT const NLP::InfoModule * loadPermanantData(const NLP::InfoModule * asked, 
     static NLP::InfoModule info = NLP::infoPermanantData();
     static NLP::PermanantData interface = NLP::PermanantData(moduleManager);
     info.changeInterface( (NLP::InterfaceModule) & interface);
-/*
+
     if( asked )
     {
-        if( ! info.isCompatible( *(NLP::InfoModule *)asked ) )
+        if( ! NLP::checkCompatibility( *asked ) )
+        {
             return nullptr;
+        }
     }
-*/
+
 
     return & info;
 }
@@ -29,7 +31,7 @@ namespace NLP
 {
     bool checkCompatibility(const InfoModule & info)
     {
-        const InfoModule & m_info = infoModuleManager();
+        const InfoModule & m_info = infoPermanantData();
         if( info.author() != m_info.author() )
             return false;
         if( info.interfaceName() != m_info.interfaceName() )
