@@ -1,19 +1,16 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
-#include "VirtualKernel.h"
+#include "IKernel.h"
 
 namespace NLP
 {
-    class Kernel : public VirtualKernel
+    class Kernel : public IKernel
     {
     public:
-        Kernel();
-
         void run(void);
-        void changeModuleManager(std::string filename = "libModuleManager");
-        void changePreferences(std::string filename = "default");
-        void restart(void);
+        void restart(bool restart, const std::string & new_init_file);
+        void restart(bool restart, const std::string && new_init_file);
 
         LibraryHandle loadLibrary(const std::string & filename) const;
 
@@ -23,22 +20,18 @@ namespace NLP
 
         void closeLibrary(LibraryHandle handle) const;
 
-        const std::string & libraryExtension(void) const { return m_libraryExtension; }
-
-        void printOk(void) const;
     protected :
 
-        void launchModuleManager(void);
+        void launchInitPhase(void);
 
     private :
         bool m_restart;
-        /** @brief ModuleManager dynamics library without its extension. */
-        std::string m_moduleManagerFile;
-        /** @brief Preferences module dynamics library without its extension. */
-        std::string m_preferencesFile;
 
-        /** @brief Dynamic library's extension used. */
-        const static std::string m_libraryExtension;
+        const static std::string m_moduleExtension;
+
+        const static std::string m_initFilename;
+
+        std::string m_new_init_file;
     };
 }
 

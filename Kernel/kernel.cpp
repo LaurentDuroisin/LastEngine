@@ -1,16 +1,15 @@
 #include "kernel.h"
-#include "VirtualModuleManager.h"
 
 #include <cassert>
-#include <sstream>
+#include <cerrno>
+#include <fstream>
 
 #ifdef _WIN32
-    #include <windows.h> // TODO rewrite
+    #include <windows.h>
+    #include <sstream>
 #else
     #include <dlfcn.h>
 #endif
-
-#include <iostream>
 
 #if not defined _WIN32 and not defined __linux__
     #warning "Your OS may be not supported"
@@ -18,11 +17,8 @@
 
 namespace NLP
 {
-    Kernel::Kernel()
-    {
-        changeModuleManager();
-        changePreferences();
-    }
+    const std::string Kernel::m_moduleExtension = ".lpm";
+    const std::string Kernel::m_initFilename = "init";
 
 
     void Kernel::run(void)
@@ -31,47 +27,61 @@ namespace NLP
         {
             m_restart = false;
 
-            launchModuleManager();
+            launchInitPhase();
+
+            if( ! m_new_init_file.empty() )
+            {
+                std::ofstream output(m_initFilename + m_moduleExtension, std::ios_base::out | std::ios_base::trunc);
+                std::ifstream input(m_new_init_file + m_moduleExtension);
+
+                if( ! output )
+                    throw std::system_error(EACCES, std::system_category(), m_initFilename + m_moduleExtension);
+                if( ! input )
+                    throw std::system_error(EACCES, std::system_category(), m_new_init_file + m_moduleExtension);
+
+                output << input.rdbuf();
+
+                if( ! output )
+                    throw std::system_error(1, std::system_category(), "Error when copying "+ m_new_init_file + m_moduleExtension +" to " + m_initFilename + m_moduleExtension + ".");
+            }
 
         } while( m_restart );
     }
 
-    void Kernel::launchModuleManager(void)
+    void Kernel::launchInitPhase(void)
     {
-        LibraryHandle handle = loadLibrary(m_moduleManagerFile);
+        LibraryHandle handle = loadLibrary(m_initFilename);
 
-        MainFct fct = (MainFct) searchSymbol(handle, "run");
+        if( ! handle )
+            throw std::system_error(EACCES, std::system_category(), m_initFilename + m_moduleExtension);
 
-        if( fct )
-            fct( *this);
-        else
-            std::cerr << libraryError() << std::endl;
+        IKernel::InitFunction fct = (IKernel::InitFunction) searchSymbol(handle, "init");
+
+        if( ! fct )
+            throw std::system_error(ENOEXEC, std::system_category(), m_initFilename + m_moduleExtension);
+        fct( *this);
 
         closeLibrary(handle);
     }
 
-    void Kernel::changeModuleManager(std::string filename)
+    void Kernel::restart(bool restart, const std::string &new_init_file)
     {
-        m_moduleManagerFile = filename;
+        m_restart = restart;
+        m_new_init_file = new_init_file;
     }
 
-    void Kernel::changePreferences(std::string filename)
+    void Kernel::restart(bool restart, const std::string &&new_init_file)
     {
-        m_preferencesFile = filename;
-    }
-
-    void Kernel::restart(void)
-    {
-        m_restart = true;
+        m_restart = restart;
+        m_new_init_file = std::move(new_init_file);
     }
 
 #ifdef _WIN32
 
-    const std::string Kernel::m_libraryExtension = ".dll";
 
     Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
     {
-        HINSTANCE handle = LoadLibrary( (filename + libraryExtension() ).c_str() );
+        HINSTANCE handle = LoadLibrary( (filename  + m_moduleExtention ).c_str() );
         return handle ;
     }
 
@@ -86,25 +96,20 @@ namespace NLP
     Kernel::LibrarySymbol Kernel::searchSymbol(Kernel::LibraryHandle handle,
                                                const std::string & symbolName) const
     {
-        if( ! handle )
-            return nullptr;
-
+        assert(handle);
         return (LibrarySymbol)GetProcAddress( (HINSTANCE)handle, symbolName.c_str() );
     }
 
     void Kernel::closeLibrary(Kernel::LibraryHandle handle) const
     {
-        if( handle )
-            FreeLibrary( (HINSTANCE)handle);
+        assert(handle);
+        FreeLibrary( (HINSTANCE)handle);
     }
 #else
-    #warning "not tested"
-
-    const std::string Kernel::m_libraryExtension = ".so";
 
     Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
     {
-        LibraryHandle handle = dlopen( (filename + libraryExtension() ).c_str(), RTLD_NOW | RTLD_GLOBAL );
+        LibraryHandle handle = dlopen( (filename + m_moduleExtension ).c_str(), RTLD_NOW | RTLD_GLOBAL );
         return handle ;
     }
 
@@ -116,16 +121,15 @@ namespace NLP
     Kernel::LibrarySymbol Kernel::searchSymbol(Kernel::LibraryHandle handle,
                                                const std::string & symbolName) const
     {
-        if( ! handle )
-            return nullptr;
+        assert(handle);
 
         return (LibrarySymbol)dlsym( (void *)handle, symbolName.c_str() );
     }
 
     void Kernel::closeLibrary(Kernel::LibraryHandle handle) const
     {
-        if( handle )
-            dlclose( (void *)handle);
+        assert(handle);
+        dlclose( (void *)handle);
     }
 #endif
 }
