@@ -1,4 +1,4 @@
 All rights reserved.
 
 DO NOT USE IT, it's might be very instable.
-The licence will change before the 22 august.
+I'll change the licence after finishing the plugin manager.
