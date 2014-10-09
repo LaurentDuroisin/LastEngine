@@ -2,6 +2,7 @@
 #include <cstdlib>
 
 /** @mainpage Last Engine
+ *
  */
 
 int main()
