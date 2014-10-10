@@ -7,30 +7,28 @@ set(CMAKE_CACHEFILE_DIR ${BUILD_PATH})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 
-# Modules
-# TODO remove
+include_directories("interfaces")
 
-#set( MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Modules)
-#FILE(GLOB children RELATIVE ${MODULE_DIR} ${MODULE_DIR}/*)
-#FOREACH(child ${children})
-#    IF(IS_DIRECTORY ${MODULE_DIR}/${child})
-#        IF( EXISTS ${MODULE_DIR}/${child}/CMakeLists.txt )
-#            add_subdirectory ( ${MODULE_DIR}/${child} )
-#        ELSE()
-#            file(GLOB_RECURSE MOD_SRC_LIST Modules/${child}/*.h Modules/${child}/*.cpp)
-#            add_library(${child} SHARED ${MOD_SRC_LIST} )
-#        ENDIF()
-#    ENDIF()
-#ENDFOREACH()
+# Modules
+
+set( MODULE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Modules)
+file(GLOB children RELATIVE ${MODULE_DIR} ${MODULE_DIR}/*)
+foreach(child ${children})
+    add_subdirectory ( ${MODULE_DIR}/${child} )
+endforeach()
 
 # Kernel
 
 file(GLOB_RECURSE SRC_LIST Kernel/*.h Kernel/*.cpp)
+
+# show the files in QtCreator
 file(GLOB_RECURSE UML_FILES doc/UML/*.dia)
+file(GLOB_RECURSE INTERFACES_FILES Interfaces/* )
 set(OTHERS_FILES LICENCE.txt doc/Doxyfile)
 
 add_executable(${PROJECT_NAME}
                ${SRC_LIST}
+               ${INTERFACES_FILES}
                ${UML_FILES}
                ${OTHERS_FILES}
                )
