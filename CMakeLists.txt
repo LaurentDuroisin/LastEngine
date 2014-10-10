@@ -6,8 +6,7 @@ set(BUILD_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/${CMAKE_SYSTEM_PROCESSOR}/${CM
 set(CMAKE_CACHEFILE_DIR ${BUILD_PATH})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
-
-include_directories("interfaces")
+include_directories("Interfaces")
 
 # Modules
 

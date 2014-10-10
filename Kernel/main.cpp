@@ -7,7 +7,7 @@
 
 int main()
 {
-    NLP::Kernel k;
+    LE::Kernel k;
     k.run();
     return EXIT_SUCCESS;
 }

@@ -15,9 +15,9 @@
     #warning "Your OS may be not supported"
 #endif
 
-namespace NLP
+namespace LE
 {
-    const std::string Kernel::m_moduleExtension = ".lpm";
+    const std::string Kernel::m_moduleExtension = ".lem";
     const std::string Kernel::m_initFilename = "init";
 
 

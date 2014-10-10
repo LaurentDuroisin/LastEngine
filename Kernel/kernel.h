@@ -1,9 +1,9 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
-#include "IKernel.h"
+#include <LastEngine/IKernel.h>
 
-namespace NLP
+namespace LE
 {
     class Kernel : public IKernel
     {

@@ -4,7 +4,7 @@
 #include <string>
 #include <system_error>
 
-namespace NLP
+namespace LE
 {
     /** @brief Provide symbol loading services to the module manager. */
     class IKernel
@@ -26,7 +26,6 @@ namespace NLP
         IKernel(void){} // required.
         IKernel(const IKernel &) = delete;
         IKernel & operator=(const IKernel &) = delete;
-        virtual ~IKernel(void) = default;
 
         /** @brief Ask for replace the current init.lpm file and restart, it will be executed when the current init.lpm will stop. */
         virtual void restart(bool restart, const std::string & new_init_file) = 0;
