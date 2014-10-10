@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cerrno>
 #include <fstream>
+#include <iostream>
 
 #ifdef _WIN32
     #include <windows.h>
@@ -55,6 +56,8 @@ namespace LE
         if( ! handle )
             throw std::system_error(EACCES, std::system_category(), m_initFilename + m_moduleExtension);
 
+
+
         IKernel::InitFunction fct = (IKernel::InitFunction) searchSymbol(handle, "init");
 
         if( ! fct )
@@ -74,6 +77,16 @@ namespace LE
     {
         m_restart = restart;
         m_new_init_file = std::move(new_init_file);
+    }
+
+    void Kernel::pathPrefixe(const std::string & str)
+    {
+        m_path_prefixe = str;
+    }
+
+    void Kernel::pathPrefixe(const std::string && str)
+    {
+        m_path_prefixe = std::move(str);
     }
 
 #ifdef _WIN32
@@ -109,8 +122,8 @@ namespace LE
 
     Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
     {
-        LibraryHandle handle = dlopen( (filename + m_moduleExtension ).c_str(), RTLD_NOW | RTLD_GLOBAL );
-        return handle ;
+        LibraryHandle handle = dlopen( (m_path_prefixe + filename + m_moduleExtension ).c_str(), RTLD_NOW | RTLD_GLOBAL );
+        return handle;
     }
 
     std::string Kernel::libraryError(void) const

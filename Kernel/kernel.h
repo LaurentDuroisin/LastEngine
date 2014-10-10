@@ -8,6 +8,10 @@ namespace LE
     class Kernel : public IKernel
     {
     public:
+
+        void pathPrefixe(const std::string &);
+        void pathPrefixe(const std::string &&);
+
         void run(void);
         void restart(bool restart, const std::string & new_init_file);
         void restart(bool restart, const std::string && new_init_file);
@@ -32,6 +36,7 @@ namespace LE
         const static std::string m_initFilename;
 
         std::string m_new_init_file;
+        std::string m_path_prefixe = "./";
     };
 }
 
