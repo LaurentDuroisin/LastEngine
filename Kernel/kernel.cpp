@@ -1,7 +1,6 @@
 #include "kernel.h"
 
 #include <cassert>
-#include <cerrno>
 #include <fstream>
 #include <iostream>
 
@@ -89,6 +88,11 @@ namespace LE
         m_path_prefixe = std::move(str);
     }
 
+    const std::string & Kernel::pathPrefix(void) const
+    {
+        return m_path_prefixe;
+    }
+
 #ifdef _WIN32
 
 
@@ -122,7 +126,7 @@ namespace LE
 
     Kernel::LibraryHandle Kernel::loadLibrary(const std::string & filename) const
     {
-        LibraryHandle handle = dlopen( (m_path_prefixe + filename + m_moduleExtension ).c_str(), RTLD_NOW | RTLD_GLOBAL );
+        LibraryHandle handle = dlopen( (m_path_prefixe + filename + m_moduleExtension ).c_str(), RTLD_NOW );
         return handle;
     }
 

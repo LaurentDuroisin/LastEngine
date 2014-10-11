@@ -3,6 +3,7 @@
 
 #include <string>
 #include <system_error>
+#include <cerrno>
 
 namespace LE
 {
@@ -56,6 +57,8 @@ namespace LE
          *  @param handle : dynamic library opened to close.
          */
         virtual void closeLibrary(LibraryHandle) const = 0;
+
+        virtual const std::string & pathPrefix(void) const = 0;
     };
 }
 
