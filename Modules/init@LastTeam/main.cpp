@@ -9,24 +9,25 @@ namespace LE
 
 EXPORT void init(LE::IKernel & k)
 {
-    LE::InfoModule_test(k, "Modules/enabled/init@LastTeam");
+    LE::Info::InfoModule_test(k, "Modules/enabled/init@LastTeam");
 }
 
 // + TODO test
 
 
-EXPORT LE::InfoModule info;
+EXPORT LE::Info::File info;
 
-LE::InfoModule info = {
-    LE::Info::file(LE::version(0,0,0,1),
-                   "2014/10/11",
-                   "https://github.com/LastProject/LastEngine/tree/master/Modules/init%40LastTeam",
-                   LE::Info::authors({
-                        LE::Info::author("Neckara", "Neckara.LastDungeon@gmail.com")
-                        })
-                   ),
-    LE::Info::modules({
-        LE::Info::module("name", LE::version(0,0,0,1), "api", LE::version(0,0,0,1)),
-        LE::Info::module("name", LE::version(0,0,0,1), "api", LE::version(0,0,0,1))
-        })
-    };
+using namespace LE::Info;
+
+File info{
+    version(0,0,0,1),
+    "2014/10/11",
+    "https://github.com/LastProject/LastEngine/tree/master/Modules/init%40LastTeam",
+    Authors{
+        Author{"Neckara", "Neckara.LastDungeon@gmail.com"}
+    },
+    Modules{
+        Module{"name", version(0,0,0,1), API{"api", version(0,0,0,1)} },
+        Module{"name", version(0,0,0,1), API{"api", version(0,0,0,1)} }
+    }
+};
