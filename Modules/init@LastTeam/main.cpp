@@ -15,5 +15,18 @@ EXPORT void init(LE::IKernel & k)
 // + TODO test
 
 
-EXPORT LE::InfoModule info = {
-    {0x40506070, "2014", "http://", { {"Neckara", "e-mail"} } }, { {"name", 0, {"api", 0} } } };
+EXPORT LE::InfoModule info;
+
+LE::InfoModule info = {
+    LE::Info::file(LE::version(0,0,0,1),
+                   "2014/10/11",
+                   "https://github.com/LastProject/LastEngine/tree/master/Modules/init%40LastTeam",
+                   LE::Info::authors({
+                        LE::Info::author("Neckara", "Neckara.LastDungeon@gmail.com")
+                        })
+                   ),
+    LE::Info::modules({
+        LE::Info::module("name", LE::version(0,0,0,1), "api", LE::version(0,0,0,1)),
+        LE::Info::module("name", LE::version(0,0,0,1), "api", LE::version(0,0,0,1))
+        })
+    };
