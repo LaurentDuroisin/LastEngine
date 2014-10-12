@@ -19,15 +19,15 @@ EXPORT LE::Info::File info;
 
 using namespace LE::Info;
 
-File info{
-    version(0,0,0,1),
+File info{ // todo constructor + copy
+    Version(0,0,0,1), // todo struct.
     "2014/10/11",
     "https://github.com/LastProject/LastEngine/tree/master/Modules/init%40LastTeam",
     Authors{
-        Author{"Neckara", "Neckara.LastDungeon@gmail.com"}
+        Author{"Neckara", "Neckara.LastDungeon@gmail.com"} // todo constructor + copy
     },
     Modules{
-        Module{"name", version(0,0,0,1), API{"api", version(0,0,0,1)} },
-        Module{"name", version(0,0,0,1), API{"api", version(0,0,0,1)} }
+        Module{"name", Version(0,0,0,1), API{"api", Version(0,0,0,1)} }, // todo constructor + copy * 2
+        Module{"name", Version(0,0,0,1), API{"api", Version(0,0,0,1)} }
     }
 };

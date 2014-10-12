@@ -15,13 +15,20 @@
 
 namespace LE
 {
+    class IKernel;
 
     namespace Info
     {
-        typedef std::uint32_t Version;
-        inline Version version(std::uint8_t major, std::uint8_t minor, std::uint8_t cl, std::uint8_t build);
-        inline std::string versionToStr(Version v, std::size_t precision = sizeof(Version) );
-
+        class Version final
+        {
+            typedef std::uint32_t M_Version;
+        public :
+            Version(std::uint8_t major, std::uint8_t minor, std::uint8_t cl, std::uint8_t build);
+            operator M_Version() const;
+            std::string toString(std::size_t precision = sizeof(M_Version) ) const;
+        private :
+            std::uint8_t m_elements[sizeof(M_Version)];
+        };
 
 
         struct Author {
@@ -40,7 +47,6 @@ namespace LE
         struct Module {
             const std::string name;
             const Info::Version version;
-
             API api;
         };
 
@@ -55,13 +61,6 @@ namespace LE
 
         };
 
-    }
-
-
-    class IKernel;
-
-    namespace Info
-    {
         inline void InfoModule_test(IKernel & k, const std::string & filename);
 
         /*==========
@@ -83,25 +82,37 @@ namespace LE
                     throw std::system_error(ENOEXEC, std::system_category(), filename);
 
                 std::cout << "=====" << filename << " info=====" << std::endl
-                          << "Version : " << Info::versionToStr(info->version) << " (" << info->date << ")" << std::endl
+                          << "Version : " << info->version.toString() << " (" << info->date << ")" << std::endl
                           << "Git repo : " << info->giturl << std::endl;
                 for( const auto & author : info->authors )
                     std::cout << "author : " << author.pseudo << " (" << author.email << ")" << std::endl;
                 for( const auto & module : info->modules )
-                    std::cout << "module : " << module.name << " (v. " << Info::versionToStr(module.version) << ") "
-                                 "implements " << module.api.name << " (v. " << Info::versionToStr(module.api.version, 2) << ")" << std::endl;
+                    std::cout << "module : " << module.name << " (v. " << module.version.toString() << ") "
+                                 "implements " << module.api.name << " (v. " << module.api.version.toString(2) << ")" << std::endl;
                 std::cout << "===== end of " << filename << " info=====" << std::endl;
 
                 k.closeLibrary(handle);
             #endif
         }
 
-        Version version(std::uint8_t major, std::uint8_t minor, std::uint8_t cl, std::uint8_t build)
+        Version::Version(std::uint8_t major, std::uint8_t minor, std::uint8_t cl, std::uint8_t build)
+            : m_elements{major, minor, cl, build}
         {
-            return (major << 24) | (minor << 16) | (cl << 8)| build;
         }
 
-        std::string versionToStr(Version v, std::size_t precision)
+        Version::operator Version::M_Version() const
+        {
+            M_Version result = 0;
+            for(std::size_t i = 0; i < sizeof(M_Version); ++i)
+            {
+                result <<= 8;
+                result |= m_elements[i];
+            }
+
+            return result;
+        }
+
+        std::string Version::toString(std::size_t precision) const
         {
             std::stringstream result;
 
@@ -109,10 +120,7 @@ namespace LE
             {
                 if( i ) result << '.';
 
-                int octet = ( v >> (8*(sizeof(v) - 1) ) );
-                result << octet;
-
-                v <<= 8;
+                result << (int) m_elements[i];
             }
 
             return result.str();
