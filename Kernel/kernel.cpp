@@ -53,14 +53,13 @@ namespace LE
         LibraryHandle handle = loadLibrary(m_initFilename);
 
         if( ! handle )
-            throw std::system_error(EACCES, std::system_category(), m_initFilename + m_moduleExtension);
-
+            throw std::system_error(EACCES, std::system_category(), m_initFilename + m_moduleExtension + ", " + libraryError() );
 
 
         IKernel::InitFunction fct = (IKernel::InitFunction) searchSymbol(handle, "init");
 
         if( ! fct )
-            throw std::system_error(ENOEXEC, std::system_category(), m_initFilename + m_moduleExtension);
+            throw std::system_error(ENOEXEC, std::system_category(), m_initFilename + m_moduleExtension + ", " + libraryError() );
         fct( *this);
 
         closeLibrary(handle);
@@ -132,7 +131,8 @@ namespace LE
 
     std::string Kernel::libraryError(void) const
     {
-        return dlerror();
+        char * str = dlerror();
+        return str ? str : "";
     }
 
     Kernel::LibrarySymbol Kernel::searchSymbol(Kernel::LibraryHandle handle,
