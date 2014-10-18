@@ -14,3 +14,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".lem")
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${PROJECT_NAME}.lem" "${BIN_PATH}/init.lem"
 )
+
+file(MAKE_DIRECTORY "${BIN_PATH}log")
