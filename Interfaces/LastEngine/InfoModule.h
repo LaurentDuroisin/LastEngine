@@ -20,6 +20,7 @@ namespace LE
 
     namespace Info
     {
+        class InfoModule;
 
         class Version final
         {

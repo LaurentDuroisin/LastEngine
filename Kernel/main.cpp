@@ -1,12 +1,10 @@
 #include "kernel.h"
+
 #include <cstdlib>
 #include <string>
-
 #include <iostream>
 
-/** @mainpage Last Engine
- *
- */
+/** @mainpage */
 
 int main(int, char ** argv)
 {
