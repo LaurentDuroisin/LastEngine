@@ -22,6 +22,12 @@ namespace LE
             virtual const std::vector<std::string> & enabledModules(void) const{ return m_enabled; }
             virtual const std::vector<std::string> & disabledModules(void) const{ return m_disabled; }
 
+            virtual const std::string & enabledPathPrefix(void) const;
+            virtual const std::string & disabledPathPrefix(void) const;
+
+            virtual const std::string & enabledRelativePathPrefix(void) const;
+            virtual const std::string & disabledRelativePathPrefix(void) const;
+
             virtual void executeChanges(void);
         private :
             IKernel & m_kernel;

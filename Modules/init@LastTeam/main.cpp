@@ -5,6 +5,7 @@
 
 #include "signalhandler.h"
 #include "Module/modulesystem.h"
+#include "Module/moduleinfo.h"
 
 namespace LE
 {
@@ -31,9 +32,10 @@ EXPORT void init(LE::IKernel & k)
 
     try {
         LE::Module::ModuleSystem ms(k);
-        ms.disable("toto");
-        LE::Module::IModuleSystem_test(ms);
-        ms.executeChanges();
+        LE::Module::ModuleInfo mi(k);
+        mi.loadInfo( ms.disabledModules(), ms.disabledRelativePathPrefix() );
+        mi.loadInfo( ms.enabledModules(), ms.enabledRelativePathPrefix() );
+        LE::Module::ModuleInfo_test(mi, ms.enabledModules() );
     } catch( LE::IException & ie )
     {
         std::cerr << ie << std::endl;

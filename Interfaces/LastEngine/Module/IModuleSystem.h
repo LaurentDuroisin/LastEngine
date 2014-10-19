@@ -26,6 +26,12 @@ namespace LE
             virtual const std::vector<std::string> & enabledModules(void) const = 0;
             virtual const std::vector<std::string> & disabledModules(void) const = 0;
 
+            virtual const std::string & enabledPathPrefix(void) const = 0;
+            virtual const std::string & disabledPathPrefix(void) const = 0;
+
+            virtual const std::string & enabledRelativePathPrefix(void) const = 0;
+            virtual const std::string & disabledRelativePathPrefix(void) const = 0;
+
             virtual void executeChanges(void) = 0;
         };
 

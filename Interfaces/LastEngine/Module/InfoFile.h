@@ -29,7 +29,7 @@ namespace LE
             public :
                 inline Version(std::uint8_t major, std::uint8_t minor, std::uint8_t cl, std::uint8_t build);
                 inline operator M_Version() const;
-                std::string toString(std::size_t precision = sizeof(M_Version) ) const;
+                inline std::string toString(std::size_t precision = sizeof(M_Version) ) const;
             private :
                 std::uint8_t m_elements[sizeof(M_Version)];
             };
@@ -81,11 +81,11 @@ namespace LE
 
             struct Date final {
 
-                Date(std::uint16_t year, std::uint8_t month, std::uint8_t day);
+                inline Date(std::uint16_t year, std::uint8_t month, std::uint8_t day);
                 inline Date(const Date &);
                 inline Date(Date &&);
 
-                operator std::string() const;
+                inline operator std::string() const;
             private :
                 std::string m_date;
             };
@@ -107,14 +107,28 @@ namespace LE
 
             };
 
-            inline void InfoModule_test(IKernel & k, const std::string & filename);
+            inline void InfoFile_test(IKernel & k, const std::string & filename);
+            inline void InfoFile_test(const File &);
 
             /*==========
              *==== Code
              *==========
              */
 
-            void InfoModule_test(IKernel & k, const std::string & filename)
+            void InfoFile_test(const File & info)
+            {
+                #ifndef NO_TEST
+                    std::cout << "Version : " << info.version.toString() << " (" << info.date << ")" << std::endl
+                              << "Git repo : " << info.giturl << std::endl;
+                    for( const auto & author : info.authors )
+                        std::cout << "author : " << author.pseudo << " (" << author.email << ")" << std::endl;
+                    for( const auto & module : info.modules )
+                        std::cout << "module : " << module.name << " (v. " << module.version.toString() << ") "
+                                     "implements " << module.api.name << " (v. " << module.api.version.toString(2) << ")" << std::endl;
+                #endif
+            }
+
+            void InfoFile_test(IKernel & k, const std::string & filename)
             {
                 #ifndef NO_TEST
                     IKernel::LibraryHandle handle = k.loadLibrary(filename);
@@ -127,14 +141,8 @@ namespace LE
                     if( ! info )
                         throw std::system_error(ENOEXEC, std::system_category(), filename + ", " + k.libraryError() );
 
-                    std::cout << "=====" << filename << " info=====" << std::endl
-                              << "Version : " << info->version.toString() << " (" << info->date << ")" << std::endl
-                              << "Git repo : " << info->giturl << std::endl;
-                    for( const auto & author : info->authors )
-                        std::cout << "author : " << author.pseudo << " (" << author.email << ")" << std::endl;
-                    for( const auto & module : info->modules )
-                        std::cout << "module : " << module.name << " (v. " << module.version.toString() << ") "
-                                     "implements " << module.api.name << " (v. " << module.api.version.toString(2) << ")" << std::endl;
+                    std::cout << "=====" << filename << " info=====" << std::endl;
+                    InfoFile_test(*info);
                     std::cout << "===== end of " << filename << " info=====" << std::endl;
 
                     k.closeLibrary(handle);

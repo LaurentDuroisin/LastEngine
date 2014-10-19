@@ -6,9 +6,8 @@
 
 namespace
 {
-    void read_dir( std::vector <std::string> & vector, std::string && path, LE::IKernel & k)
+    void read_dir( std::vector <std::string> & vector, const std::string & prefix, LE::IKernel & k)
     {
-        std::string prefix = k.pathPrefix() + path;
         std::stack<std::string> stack;
 
         stack.push("");
@@ -57,8 +56,8 @@ namespace LE
         ModuleSystem::ModuleSystem(IKernel & k)
             : m_kernel(k)
         {
-            read_dir(m_disabled, "Modules/disabled", k);
-            read_dir(m_enabled, "Modules/enabled", k);
+            read_dir(m_disabled, disabledPathPrefix() , k);
+            read_dir(m_enabled, enabledPathPrefix() , k);
         }
 
         bool ModuleSystem::enable(const std::string & filename)
@@ -99,12 +98,37 @@ namespace LE
         {
             for(const auto & pair : m_actions )
             {
-                std::string orig = m_kernel.pathPrefix() + (pair.second ? "Modules/disabled/" : "Modules/enabled/") + pair.first + m_kernel.moduleExtention();
-                std::string dest = m_kernel.pathPrefix() + (pair.second ? "Modules/enabled/" : "Modules/disabled/") + pair.first + m_kernel.moduleExtention();
+                std::string orig = (pair.second ? disabledPathPrefix() : enabledPathPrefix() ) + pair.first + m_kernel.moduleExtention();
+                std::string dest = (pair.second ? enabledPathPrefix() : disabledPathPrefix() ) + pair.first + m_kernel.moduleExtention();
 
                 if( rename(orig.c_str(), dest.c_str() ) )
                     throw std::system_error(errno, std::system_category(), "Moving " + orig + " to " + dest);
             }
+        }
+
+        const std::string & ModuleSystem::enabledPathPrefix(void) const
+        {
+            static std::string path = m_kernel.pathPrefix() + enabledRelativePathPrefix();
+
+            return path;
+        }
+
+        const std::string & ModuleSystem::disabledPathPrefix(void) const
+        {
+            static std::string path = m_kernel.pathPrefix() + disabledRelativePathPrefix();
+
+            return path;
+        }
+
+        const std::string & ModuleSystem::enabledRelativePathPrefix(void) const
+        {
+            static std::string path = "Modules/enabled/";
+            return path;
+        }
+        const std::string & ModuleSystem::disabledRelativePathPrefix(void) const
+        {
+            static std::string path = "Modules/disabled/";
+            return path;
         }
     }
 }
