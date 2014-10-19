@@ -1,5 +1,5 @@
 #include <LastEngine/Visibility.h>
-#include <LastEngine/InfoModule.h>
+#include <LastEngine/Module.h>
 #include <LastEngine/IException.h>
 #include <fstream>
 
@@ -48,9 +48,9 @@ EXPORT void init(LE::IKernel & k)
 }
 
 
-EXPORT LE::Info::File info;
+EXPORT LE::Module::Info::File info;
 
-using namespace LE::Info;
+using namespace LE::Module::Info;
 
 File info(
     Version(0,0,1,0),
