@@ -4,6 +4,7 @@ set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++11" )
 
 set(CMAKE_CACHEFILE_DIR ${BUILD_PATH})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${BIN_PATH}Modules/enabled)
+file(MAKE_DIRECTORY "${BIN_PATH}Modules/disabled")
 include_directories("../../Interfaces")
 
 file(GLOB_RECURSE MOD_SRC_LIST *.h *.cpp)

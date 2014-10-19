@@ -12,6 +12,7 @@ namespace LE
         void pathPrefixe(const std::string &);
         void pathPrefixe(const std::string &&);
         const std::string & pathPrefix(void) const;
+        const std::string & moduleExtention(void) const;
 
         void run(void);
         void restart(bool restart, const std::string & new_init_file);

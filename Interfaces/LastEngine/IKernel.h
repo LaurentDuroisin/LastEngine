@@ -59,6 +59,7 @@ namespace LE
         virtual void closeLibrary(LibraryHandle) const = 0;
 
         virtual const std::string & pathPrefix(void) const = 0;
+        virtual const std::string & moduleExtention(void) const = 0;
     };
 }
 

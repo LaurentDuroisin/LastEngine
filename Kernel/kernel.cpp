@@ -92,6 +92,11 @@ namespace LE
         return m_path_prefixe;
     }
 
+    const std::string & Kernel::moduleExtention(void) const
+    {
+        return m_moduleExtension;
+    }
+
 #ifdef _WIN32
 
 

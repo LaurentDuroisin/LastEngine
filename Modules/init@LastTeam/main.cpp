@@ -4,23 +4,19 @@
 #include <fstream>
 
 #include "signalhandler.h"
+#include "Module/modulesystem.h"
 
 namespace LE
 {
     class IKernel;
 }
 
-void foo(void)
-{
-    throw LE::Exception<LE::IException::OTHER, 0>("test", THROW_ARGS);
-}
-
-
 
 EXPORT void init(LE::IKernel & k)
 {
     // output redirections
-    std::cerr << k.pathPrefix() + "log/fatalerror.log" << std::endl;
+    std::streambuf * bufs[] = { std::cerr.rdbuf(), std::clog.rdbuf(), std::cout.rdbuf() };
+
     std::ofstream fatalerrorfile(k.pathPrefix() + "log/fatalerror.log");
     std::cerr.rdbuf(fatalerrorfile.rdbuf());
 
@@ -34,12 +30,21 @@ EXPORT void init(LE::IKernel & k)
     LE::SignalHandler shandler;
 
     try {
-        foo();
+        LE::Module::ModuleSystem ms(k);
+        ms.disable("toto");
+        LE::Module::IModuleSystem_test(ms);
+        ms.executeChanges();
     } catch( LE::IException & ie )
     {
         std::cerr << ie << std::endl;
-        throw;
+    } catch( std::exception & e)
+    {
+        std::cerr << e.what() << std::endl;
     }
+
+    std::cerr.rdbuf(bufs[0]);
+    std::clog.rdbuf(bufs[1]);
+    std::cout.rdbuf(bufs[2]);
 }
 
 
