@@ -22,6 +22,7 @@ namespace LE
         {
         public :
             IModuleInfo(void) = default;
+            virtual ~IModuleInfo(void) = default;         
             IModuleInfo(const IModuleInfo &) = delete;
             IModuleInfo & operator=(const IModuleInfo &) = delete;
 

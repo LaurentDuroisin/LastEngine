@@ -17,6 +17,7 @@ namespace LE
         {
         public :
             IModuleSystem(void) = default;
+            virtual ~IModuleSystem(void) = default;
             IModuleSystem(const IModuleSystem &) = delete;
             IModuleSystem & operator=(const IModuleSystem &) = delete;
 

@@ -17,6 +17,8 @@ namespace LE
         enum ExceptionType{OTHER};
         typedef std::uint32_t ExceptionCode;
 
+	virtual ~IException(void) = default;
+
         virtual const std::string & function(void) const = 0;
         virtual std::size_t line(void) const = 0;
         virtual const std::string & file(void) const = 0;

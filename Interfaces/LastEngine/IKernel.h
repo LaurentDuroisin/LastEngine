@@ -24,7 +24,8 @@ namespace LE
          */
         typedef void * LibrarySymbol;
 
-        IKernel(void){} // required.
+        IKernel(void) = default; // required.
+	virtual ~IKernel(void) = default;
         IKernel(const IKernel &) = delete;
         IKernel & operator=(const IKernel &) = delete;
 
