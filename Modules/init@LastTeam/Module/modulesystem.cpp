@@ -3,6 +3,7 @@
 #include <stack>
 
 #include <dirent.h>
+#include <sys/stat.h>
 
 namespace
 {
@@ -17,8 +18,6 @@ namespace
             std::string dirname = stack.top();
             stack.pop();
 
-            std::cout << dirname << std::endl;
-
             dirent * de;
             DIR * dir = opendir( (prefix + dirname).c_str() );
             if( ! dir )
@@ -26,16 +25,23 @@ namespace
 
             errno = 0;
 
+            struct stat filestat;
             while( de = readdir(dir) )
             {
                 if( de->d_name != std::string(".") && de->d_name != std::string("..") )
                 {
                     std::string filename = de->d_name;
-                    std::size_t ext_pos = filename.size() - k.moduleExtention().size();
-                    if( k.moduleExtention() == filename.substr(ext_pos) )
+                    stat( (prefix + dirname + filename).c_str(), &filestat);
+                    if( S_ISDIR( filestat.st_mode) )
+                        stack.push( dirname + filename + "/" );
+                    else
                     {
-                        filename.erase(ext_pos);
-                        vector.push_back( dirname + filename );
+                        std::size_t ext_pos = filename.size() - k.moduleExtention().size();
+                        if( k.moduleExtention() == filename.substr(ext_pos) )
+                        {
+                            filename.erase(ext_pos);
+                            vector.push_back( dirname + filename );
+                        }
                     }
                 }
             }
